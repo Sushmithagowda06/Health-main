@@ -2,3 +2,4 @@ node_modules
 .env
 cuure.db
 *.db
+service-account.json
