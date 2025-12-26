@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Cuure — Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root{
+        --bg:#f6f8fb;--card:#ffffff;--muted:#6b7280;--accent:#2563eb;--border:#e6eefc;
+      }
+      *{box-sizing:border-box}
+      body{font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg);padding:28px;color:#0f172a}
+      .wrap{max-width:1100px;margin:0 auto}
+      header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+      h1{margin:0;font-size:20px;font-weight:600;color:#0b1220}
+      .subtitle{color:var(--muted);font-size:13px}
+
+      .card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 6px 18px rgba(12,24,65,0.06);border:1px solid rgba(27,54,120,0.04)}
+
+      .controls{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+      .controls .group{display:flex;gap:8px;align-items:center}
+      input[type="text"], input[type="date"], select{padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:transparent}
+      button{padding:10px 12px;border-radius:8px;border:none;background:var(--accent);color:#fff;cursor:pointer}
+      button.secondary{background:#fff;color:var(--accent);border:1px solid rgba(37,99,235,0.12)}
+      button.ghost{background:transparent;color:var(--muted);border:1px solid transparent}
+
+      #count{margin-top:10px;color:var(--muted);font-size:13px}
+
+      table{width:100%;border-collapse:collapse;margin-top:14px;font-size:14px}
+      thead th{background:linear-gradient(180deg,#fbfdff,#f6f9ff);text-align:left;padding:12px;border-bottom:1px solid #eef6ff;color:#0b1220;font-weight:600}
+      tbody tr{background:#fff}
+      tbody tr:nth-child(even){background:#fbfdff}
+      td{padding:12px;border-bottom:1px solid #f1f6ff;color:#0b1220}
+      tr:hover td{background:linear-gradient(90deg,rgba(37,99,235,0.04),transparent);}
+
+      .badge{display:inline-block;padding:6px 8px;border-radius:999px;font-size:12px;font-weight:600}
+      .badge.booked{background:#eef2ff;color:#3730a3}
+      .badge.cancel{background:#fff1f2;color:#9f1239}
+
+      @media (max-width:860px){
+        .controls{flex-direction:column}
+        .controls .group{width:100%}
+        th,td{font-size:13px;padding:10px}
+      }
+
+      /* Modal styles */
+      .modal-overlay{position:fixed;inset:0;background:rgba(2,6,23,0.45);display:none;align-items:center;justify-content:center;z-index:60}
+      .modal-overlay.open{display:flex}
+      .modal{background:var(--card);border-radius:12px;padding:18px;max-width:980px;width:100%;box-shadow:0 18px 40px rgba(12,24,65,0.2);border:1px solid rgba(27,54,120,0.06)}
+      .modal h3{margin:0 0 8px;font-size:16px}
+      .modal .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+      .modal input{padding:10px;border:1px solid var(--border);border-radius:8px}
+      .modal .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+      .modal .close-btn{position:absolute;top:14px;right:14px;background:transparent;border:0;color:var(--muted);font-size:18px;cursor:pointer}
+    </style>
+  </head>
+  <body>
+    <h1>Admin — Appointments</h1>
+
+    <div class="wrap">
+      <header>
+        <div>
+          <!-- <h1>Admin — Appointments</h1> -->
+          <div class="subtitle">View, filter and export appointment records</div>
+        </div>
+        <div class="subtitle">Total records: <span id="total_badge">—</span></div>
+      </header>
+
+      <div class="card">
+        <div class="controls">
+          <div class="group">
+            <input id="q" type="text" placeholder="Search patient name or phone" />
+          </div>
+          <div class="group">
+            <input id="date_from" type="date" />
+            <input id="date_to" type="date" />
+          </div>
+          <div class="group">
+            <select id="doctor">
+              <option value="">All doctors</option>
+            </select>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+            <button id="apply">Apply Filter</button>
+            <button id="reset" class="secondary">Reset</button>
+            <button id="export" class="ghost">Export</button>
+            <button id="toggle-add" class="secondary">Add Appointment</button>
+          </div>
+        </div>
+
+        <div id="count"></div>
+
+        <!-- Add Appointment Modal -->
+        <div id="addModal" class="modal-overlay" aria-hidden="true">
+          <div class="modal" role="dialog" aria-modal="true">
+            <button class="close-btn" id="add_close" aria-label="Close">✕</button>
+            <h3>Add Appointment</h3>
+            <div class="row">
+              <input id="a_phone" placeholder="Phone" style="width:160px" />
+              <input id="a_name" placeholder="Patient name" style="min-width:220px" />
+              <input id="a_date" type="date" />
+              <input id="a_time" placeholder="Time (e.g. 16:00)" style="width:140px" />
+              <input id="a_time_label" placeholder="Time label (e.g. 4:00 PM – 4:30 PM)" style="min-width:200px" />
+              <input id="a_doctor" placeholder="Doctor name" style="min-width:180px" />
+              <input id="a_spec" placeholder="Specialization" style="min-width:160px" />
+            </div>
+            <div class="actions">
+              <button id="add_cancel" class="ghost">Cancel</button>
+              <button id="add_submit">Save</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="overflow:auto">
+        <table id="tbl">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Patient</th>
+          <th>Phone</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Doctor</th>
+          <th>Specialization</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="/admin.js"></script>
+  </body>
+</html>
