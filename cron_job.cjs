@@ -4,16 +4,17 @@ const cron = require("node-cron");
 const exportAppointments = require("./export_appointments.cjs");
 const sendMail = require("./mailer.js");
 
-console.log(" Nightly appointment email scheduler started");
+console.log("⏰ Cron scheduler initialized");
 
-cron.schedule("40 16 * * *", async () => {
-  console.log("🕚 Running nightly export + email job");
+// 16:35 IST every day
+cron.schedule("00 17 * * *", async () => {
+  console.log("📤 Running scheduled appointment export");
 
   try {
     const filePath = await exportAppointments();
     await sendMail(filePath);
-    console.log("✅ Nightly report email sent successfully");
+    console.log("✅ Appointment email sent successfully");
   } catch (err) {
-    console.error("❌ Nightly job failed:", err.message);
+    console.error("❌ Cron job failed:", err.message);
   }
 });

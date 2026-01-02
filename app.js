@@ -1,6 +1,8 @@
 /* ===============================
    DOCTORS (STATIC FOR NOW)
 ================================ */
+require("./cron_job.cjs"); // 👈 starts the cron automatically
+
 const doctors = [
   {
     id: 1,
