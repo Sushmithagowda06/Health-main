@@ -2,12 +2,12 @@ require("dotenv").config();
 const cron = require("node-cron");
 
 const exportAppointments = require("./export_appointments.cjs");
-const sendMail = require("./mailer.js");
+const sendMail = require("./services/mailer.cjs");
 
 console.log("⏰ Cron scheduler initialized");
 
 // 16:35 IST every day
-cron.schedule("00 17 * * *", async () => {
+cron.schedule("30 17 * * *", async () => {
   console.log("📤 Running scheduled appointment export");
 
   try {
