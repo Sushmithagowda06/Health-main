@@ -1,50 +1,58 @@
+const pool = require("./db_pg.cjs");
 const XLSX = require("xlsx");
-const path = require("path");
-const sqlite3 = require("sqlite3").verbose();
 
-const dbPath = path.join(__dirname, "cuure.db");
-const db = new sqlite3.Database(dbPath);
+module.exports = async function exportAppointments() {
+  const result = await pool.query(`
+    SELECT
+      id,
+      patient_name,
+      phone_number,
+      date,
+      time_label,
+      doctor_name,
+      doctor_specialization,
+      address,
+      location_link
+    FROM appointments
+    ORDER BY id ASC
+  `);
 
-function exportAppointments() {
-  return new Promise((resolve, reject) => {
-    const query = `
-      SELECT
-        id,
-        phone,
-        patient_name,
-        date,
-        time_label,
-        created_at
-      FROM appointments
-      ORDER BY date, time_label
-    `;
+  // Header row
+  const rows = [
+    [
+      "ID",
+      "Patient Name",
+      "Phone",
+      "Date",
+      "Time",
+      "Doctor",
+      "Specialization",
+      "Address",
+      "Location"
+    ]
+  ];
 
-    db.all(query, (err, rows) => {
-      if (err) {
-        console.error("DB error:", err.message);
-        return reject(err);
-      }
-
-      const data = rows.map(r => ({
-        ID: r.id,
-        Phone: r.phone,
-        Name: r.patient_name,
-        Date: r.date,
-        Time: r.time_label,
-        BookedAt: r.created_at
-      }));
-
-      const workbook = XLSX.utils.book_new();
-      const worksheet = XLSX.utils.json_to_sheet(data);
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Appointments");
-
-      const filePath = path.join(__dirname, "appointments.xlsx");
-      XLSX.writeFile(workbook, filePath);
-
-      console.log("📄 Appointments exported:", filePath);
-      resolve(filePath);
-    });
+  // Data rows
+  result.rows.forEach(r => {
+    rows.push([
+      r.id,
+      r.patient_name ?? "",
+      r.phone_number ?? "",
+      r.date ?? "",
+      r.time_label ?? "",
+      r.doctor_name ?? "",
+      r.doctor_specialization ?? "",
+      r.address ?? "",
+      r.location_link ?? ""
+    ]);
   });
-}
 
-module.exports = exportAppointments;
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  XLSX.utils.book_append_sheet(wb, ws, "Appointments");
+
+  return XLSX.write(wb, {
+    bookType: "xlsx",
+    type: "buffer"
+  });
+};

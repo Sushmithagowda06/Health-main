@@ -6,40 +6,46 @@ module.exports = async () => {
     SELECT
       id,
       patient_name,
-      phone,
-      email,
+      phone_number,
       date,
-      time
+      time_label,
+      doctor_name,
+      doctor_specialization,
+      address,
+      location_link
     FROM appointments
     ORDER BY id ASC
   `);
 
-  const workbook = XLSX.utils.book_new();
+  const rows = [[
+    "ID",
+    "Patient Name",
+    "Phone",
+    "Date",
+    "Time",
+    "Doctor",
+    "Specialization",
+    "Address",
+    "Location Link"
+  ]];
 
-  // STEP 3A: Add headers
-  const rows = [
-    ["ID", "Patient Name", "Phone", "Email", "Date", "Time"]
-  ];
-
-  // STEP 3B: Add DB rows
   result.rows.forEach(r => {
     rows.push([
       r.id,
-      r.patient_name,
-      r.phone,
-      r.email,
-      r.date,
-      r.time
+      r.patient_name || "",
+      r.phone_number || "",
+      r.date || "",
+      r.time_label || "",
+      r.doctor_name || "",
+      r.doctor_specialization || "",
+      r.address || "",
+      r.location_link || ""
     ]);
   });
 
-  // STEP 3C: Convert to worksheet
-  const worksheet = XLSX.utils.aoa_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  XLSX.utils.book_append_sheet(wb, ws, "Appointments");
 
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Appointments");
-
-  return XLSX.write(workbook, {
-    bookType: "xlsx",
-    type: "buffer"
-  });
+  return XLSX.write(wb, { bookType: "xlsx", type: "buffer" });
 };
