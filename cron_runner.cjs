@@ -15,44 +15,29 @@ async function runJob(label) {
   }
 
   try {
-    console.log(`📤 Exporting DB (${label})...`);
+    console.log(`📤 Exporting DB (${label})`);
     const buffer = await exportDb();
 
-    console.log(`📧 Sending mail (${label})...`);
+    console.log(`📧 Sending mail (${label})`);
     await mailer.sendReport(buffer);
 
     jobStatus.markSent();
     console.log(`✅ Mail sent successfully at ${label}`);
   } catch (err) {
-    console.error(`❌ Failed at ${label}`, err.message);
+    console.error(`❌ Failed at ${label}`, err);
   }
 }
 
 /**
  * ⏰ Scheduled attempts (IST)
  */
-cron.schedule("31 13 * * *", () => runJob("14:10"));
-cron.schedule("35 13 * * *", () => runJob("14:13"));
-cron.schedule("45 13 * * *", () => runJob("14:15"));
+jobStatus.reset();
 
-/**
- * 🌙 Reset once per day at midnight IST
- */
+cron.schedule("45 14 * * *", () => runJob("14:45"));
+cron.schedule("50 14 * * *", () => runJob("14:50"));
+cron.schedule("55 14 * * *", () => runJob("14:55"));
+
 cron.schedule("0 0 * * *", () => {
-  console.log("🔄 Midnight reset");
+  console.log("🌙 Midnight reset");
   jobStatus.reset();
 });
-
-/**
- * 🚑 Startup safety net (Railway restarts)
- */
-setTimeout(() => {
-  const now = new Date();
-  const h = now.getHours();
-  const m = now.getMinutes();
-
-  if (h === 13 && m >= 31 && m <= 50) {
-    console.log("⚠️ Startup fallback trigger");
-    runJob("startup-fallback");
-  }
-}, 30_000);

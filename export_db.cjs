@@ -6,7 +6,7 @@ module.exports = async () => {
     SELECT
       id,
       patient_name,
-      phone_number,
+      phone,
       date,
       time_label,
       doctor_name,
@@ -17,23 +17,25 @@ module.exports = async () => {
     ORDER BY id ASC
   `);
 
-  const rows = [[
-    "ID",
-    "Patient Name",
-    "Phone Number",
-    "Date",
-    "Time",
-    "Doctor",
-    "Specialization",
-    "Address",
-    "Location Link"
-  ]];
+  const rows = [
+    [
+      "ID",
+      "Patient Name",
+      "Phone",
+      "Date",
+      "Time",
+      "Doctor",
+      "Specialization",
+      "Address",
+      "Location Link"
+    ]
+  ];
 
   result.rows.forEach(r => {
     rows.push([
       r.id,
       r.patient_name || "",
-      r.phone_number || "",
+      r.phone || "",
       r.date || "",
       r.time_label || "",
       r.doctor_name || "",
@@ -43,9 +45,13 @@ module.exports = async () => {
     ]);
   });
 
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.aoa_to_sheet(rows);
-  XLSX.utils.book_append_sheet(wb, ws, "Appointments");
+  const workbook = XLSX.utils.book_new();
+  const worksheet = XLSX.utils.aoa_to_sheet(rows);
 
-  return XLSX.write(wb, { bookType: "xlsx", type: "buffer" });
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Appointments");
+
+  return XLSX.write(workbook, {
+    bookType: "xlsx",
+    type: "buffer"
+  });
 };
