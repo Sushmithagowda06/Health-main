@@ -31,9 +31,9 @@ async function runJob(label) {
 /**
  * ⏰ Scheduled attempts (IST)
  */
-cron.schedule("31 13 * * *", () => runJob("14:03"));
-cron.schedule("35 13 * * *", () => runJob("14:06"));
-cron.schedule("45 13 * * *", () => runJob("14:09"));
+cron.schedule("31 13 * * *", () => runJob("14:10"));
+cron.schedule("35 13 * * *", () => runJob("14:13"));
+cron.schedule("45 13 * * *", () => runJob("14:15"));
 
 /**
  * 🌙 Reset once per day at midnight IST
