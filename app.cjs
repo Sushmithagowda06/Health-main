@@ -1,9 +1,14 @@
 /* ===============================
    START CRON (RUNS ONCE)
 ================================ */
-require("./cron_runner.cjs"); // ✅ keep at top
-
 require("dotenv").config();
+
+(async () => {
+  await require("./init_pg.cjs");
+  require("./cron_runner.cjs");
+})();
+  // ✅ cron after DB ready
+
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -143,14 +148,23 @@ async function saveAppointment(record, doctor) {
       record.time_value,
       record.address,
       record.location_link,
-      doctor.name,                // ✅ FIXED
+      doctor.name,
       doctor.specialization
     ]
   );
 
-  appointmentsCache.push(record);
+  appointmentsCache.push({
+    phone_number: record.phone_number,
+    patient_name: record.patient_name,
+    date: record.date,
+    time_label: record.time_label,
+    time_value: record.time_value
+  });
+
   return rows[0].id;
 }
+
+
 
 /* ===============================
    ADMIN APIs

@@ -1,4 +1,4 @@
-const pool = require("./db_pg");
+const pool = require("./db_pg.cjs");
 
 (async () => {
   try {
@@ -7,8 +7,8 @@ const pool = require("./db_pg");
     console.table(users.rows);
 
     console.log("\n=== APPOINTMENTS TABLE ===");
-    const appts = await pool.query("SELECT * FROM appointments");
-    console.table(appts.rows);
+    const appointments = await pool.query("SELECT * FROM appointments");
+    console.table(appointments.rows);
   } catch (err) {
     console.error("DB error:", err.message);
   } finally {

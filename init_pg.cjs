@@ -8,6 +8,7 @@ const pool = require("./db_pg.cjs");
       phone_number TEXT,
       date DATE,
       time_label TEXT,
+      time_value TEXT,
       address TEXT,
       location_link TEXT,
       doctor_name TEXT,
@@ -16,5 +17,5 @@ const pool = require("./db_pg.cjs");
     );
   `);
 
-  console.log("✅ appointments table created");
+  console.log("✅ appointments table ready");
 })();
