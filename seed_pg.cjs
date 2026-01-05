@@ -3,7 +3,7 @@ const pool = require("./db_pg.cjs");
 (async () => {
   await pool.query(`
     INSERT INTO public.appointments
-      (phone, patient_name, email, date, time, created_at)
+      (phone_number, patient_name, email, date, time, created_at)
     VALUES
       ('9999999999', 'Test User', 'test@example.com', '2025-01-01', '4:00 PM - 4:30 PM', NOW()),
       ('917483667619', 'Trisha Reddy', 'trisha@example.com', '2025-12-10', '4:30 PM - 5:00 PM', NOW()),

@@ -6,7 +6,7 @@ module.exports = async () => {
     SELECT
       id,
       patient_name,
-      phone,
+      phone_number,
       date,
       time_label,
       doctor_name,
@@ -21,7 +21,7 @@ module.exports = async () => {
     [
       "ID",
       "Patient Name",
-      "Phone",
+      "Phone_Number",
       "Date",
       "Time",
       "Doctor",
@@ -35,7 +35,7 @@ module.exports = async () => {
     rows.push([
       r.id,
       r.patient_name || "",
-      r.phone || "",
+      r.phone_number || "",
       r.date || "",
       r.time_label || "",
       r.doctor_name || "",

@@ -5,7 +5,7 @@ const pool = require("./db_pg.cjs");
     CREATE TABLE IF NOT EXISTS appointments (
       id SERIAL PRIMARY KEY,
       patient_name TEXT,
-      phone TEXT,
+      phone_number TEXT,
       date DATE,
       time_label TEXT,
       address TEXT,
