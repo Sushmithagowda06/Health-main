@@ -22,7 +22,7 @@ module.exports = async function exportAppointments() {
     [
       "ID",
       "Patient Name",
-      "Phone",
+      "Phone Number",
       "Date",
       "Time",
       "Doctor",

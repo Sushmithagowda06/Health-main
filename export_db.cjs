@@ -20,7 +20,7 @@ module.exports = async () => {
   const rows = [[
     "ID",
     "Patient Name",
-    "Phone",
+    "Phone Number",
     "Date",
     "Time",
     "Doctor",
