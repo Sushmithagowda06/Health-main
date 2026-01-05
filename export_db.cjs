@@ -1,61 +1,45 @@
 const pool = require("./db_pg.cjs");
 const XLSX = require("xlsx");
 
-module.exports = async function exportDb() {
-  // ✅ Correct columns based on your table
+module.exports = async () => {
   const result = await pool.query(`
     SELECT
       id,
       patient_name,
       phone,
+      email,
       date,
-      time_label,
-      address,
-      doctor_name,
-      doctor_specialization,
-      created_at
+      time
     FROM appointments
     ORDER BY id ASC
   `);
 
   const workbook = XLSX.utils.book_new();
 
-  // ✅ Excel headers
+  // STEP 3A: Add headers
   const rows = [
-    [
-      "ID",
-      "Patient Name",
-      "Phone",
-      "Date",
-      "Time",
-      "Address",
-      "Doctor Name",
-      "Doctor Specialization",
-      "Created At"
-    ]
+    ["ID", "Patient Name", "Phone", "Email", "Date", "Time"]
   ];
 
-  // ✅ Fill data
+  // STEP 3B: Add DB rows
   result.rows.forEach(r => {
     rows.push([
       r.id,
-      r.patient_name || "",
-      r.phone || "",
-      r.date || "",
-      r.time_label || "",
-      r.address || "",
-      r.doctor_name || "",
-      r.doctor_specialization || "",
-      r.created_at || ""
+      r.patient_name,
+      r.phone,
+      r.email,
+      r.date,
+      r.time
     ]);
   });
 
+  // STEP 3C: Convert to worksheet
   const worksheet = XLSX.utils.aoa_to_sheet(rows);
+
   XLSX.utils.book_append_sheet(workbook, worksheet, "Appointments");
 
-  // ✅ Return buffer (for nodemailer)
   return XLSX.write(workbook, {
     bookType: "xlsx",
-    type: "buffer",
+    type: "buffer"
   });
 };
