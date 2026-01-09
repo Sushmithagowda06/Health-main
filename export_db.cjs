@@ -8,11 +8,11 @@ module.exports = async () => {
       patient_name,
       phone_number,
       date,
-      time_label,
-      doctor_name,
-      doctor_specialization,
-      address,
-      location_link
+      COALESCE(time_label, time::text) AS time_label,
+      COALESCE(doctor_name, '') AS doctor_name,
+      COALESCE(doctor_specialization, '') AS doctor_specialization,
+      COALESCE(address, '') AS address,
+      COALESCE(location_link, '') AS location_link
     FROM appointments
     ORDER BY id ASC
   `);
@@ -21,7 +21,7 @@ module.exports = async () => {
     [
       "ID",
       "Patient Name",
-      "Phone_Number",
+      "Phone Number",
       "Date",
       "Time",
       "Doctor",
@@ -34,14 +34,14 @@ module.exports = async () => {
   result.rows.forEach(r => {
     rows.push([
       r.id,
-      r.patient_name || "",
-      r.phone_number || "",
-      r.date || "",
-      r.time_label || "",
-      r.doctor_name || "",
-      r.doctor_specialization || "",
-      r.address || "",
-      r.location_link || ""
+      r.patient_name ?? "",
+      r.phone_number ?? "",
+      r.date ?? "",
+      r.time_label ?? "",
+      r.doctor_name ?? "",
+      r.doctor_specialization ?? "",
+      r.address ?? "",
+      r.location_link ?? ""
     ]);
   });
 
