@@ -215,7 +215,7 @@
         const patient_name = document.getElementById('add-name').value.trim();
         const date = document.getElementById('add-date').value;
         const time_value = document.getElementById('add-time').value.trim();
-        const time_label = document.getElementById('add-time-label').value.trim();
+        const time = document.getElementById('add-time-label').value.trim();
         const doctor_name = document.getElementById('add-doctor').value.trim();
         const doctor_specialization = document.getElementById('add-spec').value.trim();
         const address = document.getElementById('add-address').value.trim();
@@ -230,7 +230,7 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              phone, patient_name, date, time_value, time_label,
+              phone, patient_name, date, time_value, time,
               doctor_name, doctor_specialization, address
             })
           });
@@ -267,7 +267,7 @@
               <td>${a.patient_name || '—'}</td>
               <td>${a.phone}</td>
               <td>${a.date}</td>
-              <td>${a.time_label}</td>
+              <td>${a.time}</td>
               <td>${a.doctor_name}</td>
               <td>${a.address || '—'}</td>
               <td><span class="badge booked">✓ Booked</span></td>
@@ -328,7 +328,7 @@
         if (!appointmentsData.length) return alert('No data to export');
         const csv = [
           ['ID', 'Patient', 'Phone', 'Date', 'Time', 'Doctor', 'Address'].join(','),
-          ...appointmentsData.map(a => [a.id, a.patient_name, a.phone, a.date, a.time_label, a.doctor_name, a.address].map(v => `"${v || ''}"`).join(','))
+          ...appointmentsData.map(a => [a.id, a.patient_name, a.phone, a.date, a.time, a.doctor_name, a.address].map(v => `"${v || ''}"`).join(','))
         ].join('\n');
         const a = document.createElement('a');
         a.href = 'data:text/csv,' + encodeURIComponent(csv);

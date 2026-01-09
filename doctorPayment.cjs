@@ -14,7 +14,7 @@ async function handleDoctorPaymentFlow({
   if (lower === "pay") {
     return new Promise((resolve) => {
       db.all(
-        `SELECT id, patient_name, date, time_label 
+        `SELECT id, patient_name, date, time 
          FROM appointments 
          ORDER BY created_at DESC 
          LIMIT 5`,
@@ -28,7 +28,7 @@ async function handleDoctorPaymentFlow({
           const listRows = rows.map((r) => ({
             id: `PAY_PATIENT_${r.id}`,
             title: r.patient_name || "Patient",
-            description: `${r.date} • ${r.time_label}`,
+            description: `${r.date} • ${r.time}`,
           }));
 
           await sendWhatsAppList(from, {
@@ -66,7 +66,7 @@ async function handleDoctorPaymentFlow({
     return new Promise((resolve) => {
       // fetch recent appointments and match by last 10 digits of stored phone
       db.all(
-        `SELECT id, patient_name, phone, date, time_label FROM appointments ORDER BY created_at DESC LIMIT 200`,
+        `SELECT id, patient_name, phone, date, time FROM appointments ORDER BY created_at DESC LIMIT 200`,
         async (err, rows) => {
           const candidates = (rows || []).filter((r) => {
             const digits = (r.phone || '').replace(/\D/g, '');
@@ -93,7 +93,7 @@ async function handleDoctorPaymentFlow({
           const listRows = candidates.map((r) => ({
             id: `PAY_PATIENT_${r.id}`,
             title: r.patient_name || 'Patient',
-            description: `${r.phone || ''} • ${r.date} • ${r.time_label}`,
+            description: `${r.phone || ''} • ${r.date} • ${r.time}`,
           }));
 
           await sendWhatsAppList(from, {

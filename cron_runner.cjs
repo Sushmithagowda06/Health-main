@@ -33,10 +33,10 @@ async function runJob(label) {
  */
 jobStatus.reset();
 
-cron.schedule("35 21 * * *", () => runJob("21:35"));
-cron.schedule("37 21 * * *", () => runJob("21:37"));
-cron.schedule("40 21 * * *", () => runJob("21:40"));
 
+cron.schedule("58 21 * * *", () => runJob("21:58"));
+cron.schedule("00 22 * * *", () => runJob("22:00"));
+cron.schedule("02 22 * * *", () => runJob("22:02"));
 
 cron.schedule("0 0 * * *", () => {
   console.log("🌙 Midnight reset");
