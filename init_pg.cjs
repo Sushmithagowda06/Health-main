@@ -7,7 +7,7 @@ const pool = require("./db_pg.cjs");
       patient_name TEXT,
       phone_number TEXT,
       date DATE,
-      time TEXT,
+      time_label TEXT,
       time_value TEXT,
       address TEXT,
       location_link TEXT,

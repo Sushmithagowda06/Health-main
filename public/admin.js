@@ -19,7 +19,7 @@ function renderTable(rows){
       <td>${r.patient_name || ''}</td>
       <td>${r.phone || ''}</td>
       <td>${r.date || ''}</td>
-      <td>${r.time || ''}</td>
+      <td>${r.time_label || ''}</td>
       <td>${r.doctor_name || ''}</td>
       <td>${r.doctor_specialization || ''}</td>
       <td>${r.status || ''}</td>
@@ -73,7 +73,7 @@ function exportToExcel(rows){
     Patient: r.patient_name,
     Phone: r.phone,
     Date: r.date,
-    Time: r.time,
+    Time: r.time_label,
     Doctor: r.doctor_name,
     Specialization: r.doctor_specialization,
     Status: r.status
@@ -113,7 +113,7 @@ async function init(){
           patient_name: tds[1].textContent,
           phone: tds[2].textContent,
           date: tds[3].textContent,
-          time: tds[4].textContent,
+          time_label: tds[4].textContent,
           doctor_name: tds[5].textContent,
           doctor_specialization: tds[6].textContent,
           status: tds[7].textContent,
@@ -147,7 +147,7 @@ async function init(){
         patient_name: document.getElementById('a_name').value.trim(),
         date: document.getElementById('a_date').value,
         time_value: document.getElementById('a_time').value.trim(),
-        time: document.getElementById('a_time').value.trim(),
+        time_label: document.getElementById('a_time_label').value.trim(),
         doctor_name: document.getElementById('a_doctor').value.trim(),
         doctor_specialization: document.getElementById('a_spec').value.trim(),
       };

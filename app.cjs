@@ -100,7 +100,7 @@ function getSession(phone) {
 (async () => {
   try {
     const { rows } = await pool.query(
-      `SELECT phone_number, patient_name, date, time, time_value FROM appointments`
+      `SELECT phone_number, patient_name, date, time_label, time_value FROM appointments`
     );
     appointmentsCache.push(...rows);
     console.log(`✅ Loaded ${rows.length} appointments into cache`);
@@ -137,14 +137,14 @@ function getAvailableSlots(date) {
 async function saveAppointment(record, doctor) {
   const { rows } = await pool.query(
     `INSERT INTO appointments
-     (phone_number, patient_name, date, time, time_value, address, location_link, doctor_name, doctor_specialization)
+     (phone_number, patient_name, date, time_label, time_value, address, location_link, doctor_name, doctor_specialization)
      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
      RETURNING id`,
     [
       record.phone_number,
       record.patient_name,
       record.date,
-      record.time,
+      record.time_label,
       record.time_value,
       record.address,
       record.location_link,
@@ -157,7 +157,7 @@ async function saveAppointment(record, doctor) {
     phone_number: record.phone_number,
     patient_name: record.patient_name,
     date: record.date,
-    time: record.time,
+    time_label: record.time_label,
     time_value: record.time_value
   });
 
@@ -172,7 +172,7 @@ async function saveAppointment(record, doctor) {
 app.get("/api/admin/appointments", async (req, res) => {
   try {
     const { rows } = await pool.query(
-      `SELECT id, patient_name, phone_number, date, time,
+      `SELECT id, patient_name, phone_number, date, time_label,
               address, location_link, doctor_name, doctor_specialization,
               'Booked' AS status
        FROM appointments
